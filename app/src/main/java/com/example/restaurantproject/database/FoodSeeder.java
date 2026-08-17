@@ -56,7 +56,8 @@ public class FoodSeeder {
         values.put("description", description);
         values.put("price", price);
         values.put("category", category);
-        values.put("image", R.drawable.ic_launcher_foreground);
+        String fileName = name.toLowerCase().replace(" ", "_") + ".jpg";
+        values.put("image", "file:///android_asset/images/" + fileName);
         values.put("is_available", 1);
         db.insert(tableName, null, values);
     }

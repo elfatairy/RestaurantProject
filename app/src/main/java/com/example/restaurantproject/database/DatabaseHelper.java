@@ -16,17 +16,14 @@ import com.example.restaurantproject.R;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Restaurant.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     // Table Names
     public static final String TABLE_USERS = "users";
     public static final String TABLE_FOODS = "foods";
-    public static final String TABLE_FOOD_ADDITIONS = "food_additions";
     public static final String TABLE_CART_ITEMS = "cart_items";
-    public static final String TABLE_CART_ITEM_ADDITIONS = "cart_item_additions";
     public static final String TABLE_ORDERS = "orders";
     public static final String TABLE_ORDER_ITEMS = "order_items";
-    public static final String TABLE_ORDER_ITEM_ADDITIONS = "order_item_additions";
 
     // Create Tables Statements
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "("
@@ -45,16 +42,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "description TEXT,"
             + "price REAL,"
             + "category TEXT,"
-            + "image INTEGER,"
+            + "image TEXT,"
             + "is_available INTEGER DEFAULT 1"
-            + ")";
-
-    private static final String CREATE_TABLE_FOOD_ADDITIONS = "CREATE TABLE " + TABLE_FOOD_ADDITIONS + "("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "food_id INTEGER,"
-            + "addition_name TEXT,"
-            + "price REAL,"
-            + "FOREIGN KEY(food_id) REFERENCES " + TABLE_FOODS + "(id)"
             + ")";
 
     private static final String CREATE_TABLE_CART_ITEMS = "CREATE TABLE " + TABLE_CART_ITEMS + "("
@@ -64,16 +53,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "quantity INTEGER,"
             + "size TEXT,"
             + "special_instructions TEXT,"
+            + "extra_cheese INTEGER DEFAULT 0,"
+            + "extra_bacon INTEGER DEFAULT 0,"
+            + "extra_sauce INTEGER DEFAULT 0,"
+            + "extra_lettuce INTEGER DEFAULT 0,"
             + "FOREIGN KEY(user_id) REFERENCES " + TABLE_USERS + "(id),"
             + "FOREIGN KEY(food_id) REFERENCES " + TABLE_FOODS + "(id)"
-            + ")";
-
-    private static final String CREATE_TABLE_CART_ITEM_ADDITIONS = "CREATE TABLE " + TABLE_CART_ITEM_ADDITIONS + "("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "cart_item_id INTEGER,"
-            + "addition_id INTEGER,"
-            + "FOREIGN KEY(cart_item_id) REFERENCES " + TABLE_CART_ITEMS + "(id),"
-            + "FOREIGN KEY(addition_id) REFERENCES " + TABLE_FOOD_ADDITIONS + "(id)"
             + ")";
 
     private static final String CREATE_TABLE_ORDERS = "CREATE TABLE " + TABLE_ORDERS + "("
@@ -93,16 +78,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "quantity INTEGER,"
             + "size TEXT,"
             + "unit_price REAL,"
+            + "extra_cheese INTEGER DEFAULT 0,"
+            + "extra_bacon INTEGER DEFAULT 0,"
+            + "extra_sauce INTEGER DEFAULT 0,"
+            + "extra_lettuce INTEGER DEFAULT 0,"
             + "FOREIGN KEY(order_id) REFERENCES " + TABLE_ORDERS + "(id),"
             + "FOREIGN KEY(food_id) REFERENCES " + TABLE_FOODS + "(id)"
-            + ")";
-
-    private static final String CREATE_TABLE_ORDER_ITEM_ADDITIONS = "CREATE TABLE " + TABLE_ORDER_ITEM_ADDITIONS + "("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "order_item_id INTEGER,"
-            + "addition_name TEXT,"
-            + "price REAL,"
-            + "FOREIGN KEY(order_item_id) REFERENCES " + TABLE_ORDER_ITEMS + "(id)"
             + ")";
 
     public DatabaseHelper(Context context) {
@@ -113,23 +94,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_FOODS);
-        db.execSQL(CREATE_TABLE_FOOD_ADDITIONS);
         db.execSQL(CREATE_TABLE_CART_ITEMS);
-        db.execSQL(CREATE_TABLE_CART_ITEM_ADDITIONS);
         db.execSQL(CREATE_TABLE_ORDERS);
         db.execSQL(CREATE_TABLE_ORDER_ITEMS);
-        db.execSQL(CREATE_TABLE_ORDER_ITEM_ADDITIONS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older tables if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEM_ADDITIONS);
+        db.execSQL("DROP TABLE IF EXISTS order_item_additions");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART_ITEM_ADDITIONS);
+        db.execSQL("DROP TABLE IF EXISTS cart_item_additions");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART_ITEMS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_ADDITIONS);
+        db.execSQL("DROP TABLE IF EXISTS food_additions");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         
@@ -162,7 +140,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 food.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
                 food.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow("price")));
                 food.setCategory(cursor.getString(cursor.getColumnIndexOrThrow("category")));
-                food.setImage(cursor.getInt(cursor.getColumnIndexOrThrow("image")));
+                food.setImage(cursor.getString(cursor.getColumnIndexOrThrow("image")));
                 food.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("is_available")) == 1);
                 foods.add(food);
             } while (cursor.moveToNext());
@@ -182,39 +160,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             food.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
             food.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow("price")));
             food.setCategory(cursor.getString(cursor.getColumnIndexOrThrow("category")));
-            food.setImage(cursor.getInt(cursor.getColumnIndexOrThrow("image")));
+            food.setImage(cursor.getString(cursor.getColumnIndexOrThrow("image")));
             food.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("is_available")) == 1);
         }
         cursor.close();
         return food;
     }
 
-    public long addFoodToCart(int userId, int foodId, int quantity, String size, String specialInstructions, List<Integer> additionIds) {
+    public long addFoodToCart(int userId, int foodId, int quantity, String size, String specialInstructions, int extraCheese, int extraBacon, int extraSauce, int extraLettuce) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long cartItemId = -1;
-        db.beginTransaction();
-        try {
-            ContentValues values = new ContentValues();
-            values.put("user_id", userId);
-            values.put("food_id", foodId);
-            values.put("quantity", quantity);
-            values.put("size", size);
-            values.put("special_instructions", specialInstructions);
-            cartItemId = db.insert(TABLE_CART_ITEMS, null, values);
-
-            if (cartItemId != -1 && additionIds != null) {
-                for (int additionId : additionIds) {
-                    ContentValues addValues = new ContentValues();
-                    addValues.put("cart_item_id", cartItemId);
-                    addValues.put("addition_id", additionId);
-                    db.insert(TABLE_CART_ITEM_ADDITIONS, null, addValues);
-                }
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
-        return cartItemId;
+        ContentValues values = new ContentValues();
+        values.put("user_id", userId);
+        values.put("food_id", foodId);
+        values.put("quantity", quantity);
+        values.put("size", size);
+        values.put("special_instructions", specialInstructions);
+        values.put("extra_cheese", extraCheese);
+        values.put("extra_bacon", extraBacon);
+        values.put("extra_sauce", extraSauce);
+        values.put("extra_lettuce", extraLettuce);
+        return db.insert(TABLE_CART_ITEMS, null, values);
     }
 
     public int editCartItem(int cartItemId, int quantity, String size) {
@@ -227,7 +192,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void removeCartItem(int cartItemId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CART_ITEM_ADDITIONS, "cart_item_id=?", new String[]{String.valueOf(cartItemId)});
         db.delete(TABLE_CART_ITEMS, "id=?", new String[]{String.valueOf(cartItemId)});
     }
 
@@ -245,6 +209,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 item.setQuantity(cursor.getInt(cursor.getColumnIndexOrThrow("quantity")));
                 item.setSize(cursor.getString(cursor.getColumnIndexOrThrow("size")));
                 item.setSpecialInstructions(cursor.getString(cursor.getColumnIndexOrThrow("special_instructions")));
+                item.setExtraCheese(cursor.getInt(cursor.getColumnIndexOrThrow("extra_cheese")));
+                item.setExtraBacon(cursor.getInt(cursor.getColumnIndexOrThrow("extra_bacon")));
+                item.setExtraSauce(cursor.getInt(cursor.getColumnIndexOrThrow("extra_sauce")));
+                item.setExtraLettuce(cursor.getInt(cursor.getColumnIndexOrThrow("extra_lettuce")));
                 cart.add(item);
             } while (cursor.moveToNext());
         }
@@ -254,7 +222,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public double getCartTotalPrice(int userId) {
         double total = 0;
-        SQLiteDatabase db = this.getReadableDatabase();
         List<CartItem> cartItems = getCart(userId);
         
         for (CartItem item : cartItems) {
@@ -262,20 +229,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (food != null) {
                 double itemTotal = food.getPrice();
                 
-                // Get additions for this cart item
-                Cursor cursor = db.rawQuery(
-                    "SELECT f.price FROM " + TABLE_CART_ITEM_ADDITIONS + " c " +
-                    "JOIN " + TABLE_FOOD_ADDITIONS + " f ON c.addition_id = f.id " +
-                    "WHERE c.cart_item_id = ?", 
-                    new String[]{String.valueOf(item.getId())}
-                );
-                
-                if (cursor.moveToFirst()) {
-                    do {
-                        itemTotal += cursor.getDouble(0);
-                    } while (cursor.moveToNext());
-                }
-                cursor.close();
+                if (item.getExtraCheese() == 1) itemTotal += 15.0;
+                if (item.getExtraSauce() == 1) itemTotal += 10.0;
+                if (item.getExtraLettuce() == 1) itemTotal += 20.0;
+                if (item.getExtraBacon() == 1) itemTotal += 30.0;
                 
                 total += itemTotal * item.getQuantity();
             }
@@ -304,36 +261,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 for (CartItem item : cartItems) {
                     Food food = getFoodById(item.getFoodId());
                     if (food != null) {
-                        // Insert Order Item
                         ContentValues orderItemValues = new ContentValues();
                         orderItemValues.put("order_id", orderId);
                         orderItemValues.put("food_id", item.getFoodId());
                         orderItemValues.put("quantity", item.getQuantity());
                         orderItemValues.put("size", item.getSize());
                         orderItemValues.put("unit_price", food.getPrice());
-                        long orderItemId = db.insert(TABLE_ORDER_ITEMS, null, orderItemValues);
-
-                        if (orderItemId != -1) {
-                            // Copy Additions
-                            Cursor cursor = db.rawQuery(
-                                "SELECT f.addition_name, f.price FROM " + TABLE_CART_ITEM_ADDITIONS + " c " +
-                                "JOIN " + TABLE_FOOD_ADDITIONS + " f ON c.addition_id = f.id " +
-                                "WHERE c.cart_item_id = ?", 
-                                new String[]{String.valueOf(item.getId())}
-                            );
-                            if (cursor.moveToFirst()) {
-                                do {
-                                    ContentValues additionValues = new ContentValues();
-                                    additionValues.put("order_item_id", orderItemId);
-                                    additionValues.put("addition_name", cursor.getString(0));
-                                    additionValues.put("price", cursor.getDouble(1));
-                                    db.insert(TABLE_ORDER_ITEM_ADDITIONS, null, additionValues);
-                                } while (cursor.moveToNext());
-                            }
-                            cursor.close();
-                        }
-                        // Remove Cart Additions
-                        db.delete(TABLE_CART_ITEM_ADDITIONS, "cart_item_id=?", new String[]{String.valueOf(item.getId())});
+                        orderItemValues.put("extra_cheese", item.getExtraCheese());
+                        orderItemValues.put("extra_bacon", item.getExtraBacon());
+                        orderItemValues.put("extra_sauce", item.getExtraSauce());
+                        orderItemValues.put("extra_lettuce", item.getExtraLettuce());
+                        db.insert(TABLE_ORDER_ITEMS, null, orderItemValues);
                     }
                 }
                 // Clear cart items

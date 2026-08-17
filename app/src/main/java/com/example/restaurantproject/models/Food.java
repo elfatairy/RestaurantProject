@@ -6,12 +6,12 @@ public class Food {
     private String description;
     private double price;
     private String category;
-    private int image;
+    private String image;
     private boolean isAvailable;
 
     public Food() {}
 
-    public Food(String name, String description, double price, String category, int image, boolean isAvailable) {
+    public Food(String name, String description, double price, String category, String image, boolean isAvailable) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -20,7 +20,7 @@ public class Food {
         this.isAvailable = isAvailable;
     }
 
-    public Food(int id, String name, String description, double price, String category, int image, boolean isAvailable) {
+    public Food(int id, String name, String description, double price, String category, String image, boolean isAvailable) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,8 +45,8 @@ public class Food {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
     
-    public int getImage() { return image; }
-    public void setImage(int image) { this.image = image; }
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
     
     public boolean isAvailable() { return isAvailable; }
     public void setAvailable(boolean isAvailable) { this.isAvailable = isAvailable; }

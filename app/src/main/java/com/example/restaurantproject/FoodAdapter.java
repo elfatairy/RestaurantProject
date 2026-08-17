@@ -62,7 +62,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.tvFoodName.setText(food.getName());
         holder.tvFoodDescription.setText(food.getDescription());
         holder.tvFoodPrice.setText(food.getPrice() + " EGP");
-        holder.ivFood.setImageResource(food.getImage());
+        com.bumptech.glide.Glide.with(holder.itemView.getContext())
+                .load(food.getImage())
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.ivFood);
         holder.btnFoodMenu.setOnClickListener(v -> {
 
             PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.btnFoodMenu);

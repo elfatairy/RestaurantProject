@@ -7,6 +7,10 @@ public class OrderItem {
     private int quantity;
     private String size;
     private double unitPrice;
+    private int extraCheese;
+    private int extraBacon;
+    private int extraSauce;
+    private int extraLettuce;
 
     public OrderItem() {}
 
@@ -36,4 +40,16 @@ public class OrderItem {
 
     public double getUnitPrice() { return unitPrice; }
     public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
+
+    public int getExtraCheese() { return extraCheese; }
+    public void setExtraCheese(int extraCheese) { this.extraCheese = extraCheese; }
+
+    public int getExtraBacon() { return extraBacon; }
+    public void setExtraBacon(int extraBacon) { this.extraBacon = extraBacon; }
+
+    public int getExtraSauce() { return extraSauce; }
+    public void setExtraSauce(int extraSauce) { this.extraSauce = extraSauce; }
+
+    public int getExtraLettuce() { return extraLettuce; }
+    public void setExtraLettuce(int extraLettuce) { this.extraLettuce = extraLettuce; }
 }
