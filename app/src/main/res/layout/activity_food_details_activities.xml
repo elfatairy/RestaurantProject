@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".FoodDetailsActivities">
+
+    <TextView
+        android:id="@+id/tvFoodTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="THE SUPREME"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFoodDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Delicious beef patty with fresh lettuce and American cheese topped by our secret sauce."
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFoodTitle" />
+
+    <TextView
+        android:id="@+id/tvSizeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Select Size:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFoodDescription" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/tvSizeLabel">
+
+        <RadioButton
+            android:id="@+id/radioSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="Normal" />
+
+        <RadioButton
+            android:id="@+id/radioMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Double (+50 LE)" />
+
+        <RadioButton
+            android:id="@+id/radioLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Triple (+100 LE)" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tvExtrasLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Add Extras:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupSize" />
+
+    <CheckBox
+        android:id="@+id/cbExtraCheese"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Extra Cheese (+15 LE)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvExtrasLabel" />
+
+    <CheckBox
+        android:id="@+id/cbExtraSauce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Extra Sauce (+10 LE)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbExtraCheese" />
+
+    <CheckBox
+        android:id="@+id/cbExtraLettuce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Extra Lettuce (+20 LE)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbExtraSauce" />
+
+    <CheckBox
+        android:id="@+id/cbExtraBeefBacon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Extra Beef Bacon (+30 LE)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbExtraLettuce" />
+
+    <!-- قسم التحكم بالكمية (+ / -) -->
+    <LinearLayout
+        android:id="@+id/layoutQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbExtraBeefBacon">
+
+        <Button
+            android:id="@+id/btnMinus"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:backgroundTint="#4CAF50"
+            android:text="-"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:text="1"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnPlus"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:backgroundTint="#4CAF50"
+            android:text="+"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- زر إضافة إلى السلة باللون الأخضر -->
+    <Button
+        android:id="@+id/btnAddToCart"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#4CAF50"
+        android:text="Add to Cart - 150.00 LE"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
