@@ -14,6 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.restaurantproject.database.DatabaseHelper;
+import com.example.restaurantproject.models.Food;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,31 +29,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         RecyclerView recyclerFood = findViewById(R.id.recyclerFood);
 
-        List<Food> foodList = new ArrayList<>();
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        dbHelper.seedInitialFoods();
 
-        foodList.add(new Food(
-                "Classic Burger",
-                "Beef burger with cheese",
-                150,
-                "Burger",
-                R.drawable.ic_launcher_foreground
-        ));
-
-        foodList.add(new Food(
-                "Chicken Pizza",
-                "Chicken pizza with cheese",
-                180,
-                "Pizza",
-                R.drawable.ic_launcher_foreground
-        ));
-
-        foodList.add(new Food(
-                "Pasta",
-                "Creamy pasta with chicken",
-                120,
-                "Pasta",
-                R.drawable.ic_launcher_foreground
-        ));
+        List<Food> foodList = dbHelper.getFoods();
 
         FoodAdapter adapter = new FoodAdapter(foodList);
 
@@ -62,7 +44,10 @@ public class MainActivity extends AppCompatActivity {
                 "All",
                 "Burger",
                 "Pizza",
-                "Pasta"
+                "Pasta",
+                "Drinks",
+                "Salad",
+                "Dessert"
         };
         ArrayAdapter<String> spinnerAdapter =
                 new ArrayAdapter<>(
