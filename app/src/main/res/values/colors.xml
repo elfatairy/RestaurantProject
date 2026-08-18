@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primaryGreen">#006437</color>
+    <color name="secondaryGreen">#008248</color>
+    <color name="appBackground">#F7F7F7</color>
+    <color name="textGray">#757575</color>
+    <color name="lightGray">#E0E0E0</color>
 </resources>

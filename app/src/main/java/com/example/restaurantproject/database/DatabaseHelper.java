@@ -114,6 +114,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
+
+    // AUTHENTICATION OPERATIONS
+    // ==========================================
+
+    public long registerUser(String name, String email, String password, String phone, String address) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("email", email);
+        values.put("password", password);
+        values.put("phone_number", phone);
+        values.put("address", address);
+        return db.insert(TABLE_USERS, null, values);
+    }
+
+    public boolean checkUser(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, new String[]{"id"}, "email=? AND password=?",
+                new String[]{email, password}, null, null, null);
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
+    }
+
+    public int getUserIdByEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, new String[]{"id"}, "email=?",
+                new String[]{email}, null, null, null);
+        int userId = -1;
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+        }
+        cursor.close();
+        return userId;
+    }
+
+
     // ==========================================
     // CRUD & BUSINESS LOGIC
     // ==========================================
