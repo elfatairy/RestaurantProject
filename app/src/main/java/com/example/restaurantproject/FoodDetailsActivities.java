@@ -20,7 +20,7 @@ public class FoodDetailsActivities extends AppCompatActivity {
     private int foodId = -1; // Default
     private DatabaseHelper dbHelper;
 
-    private TextView tvQuantity;
+    private TextView tvQuantity, tvFoodTitle, tvFoodDescription;
     private Button btnAddToCart;
     private RadioGroup radioGroupSize;
     private CheckBox cbExtraCheese, cbExtraSauce, cbExtraLettuce, cbExtraBeefBacon;
@@ -32,17 +32,10 @@ public class FoodDetailsActivities extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
-        // Get Food ID from Intent
-        foodId = getIntent().getIntExtra("food_id", -1);
-        if (foodId != -1) {
-            Food food = dbHelper.getFoodById(foodId);
-            if (food != null) {
-                basePrice = food.getPrice();
-            }
-        }
-
         // ربط العناصر مع XML
         tvQuantity = findViewById(R.id.tvQuantity);
+        tvFoodTitle = findViewById(R.id.tvFoodTitle);
+        tvFoodDescription = findViewById(R.id.tvFoodDescription);
         btnAddToCart = findViewById(R.id.btnAddToCart);
         radioGroupSize = findViewById(R.id.radioGroupSize);
         cbExtraCheese = findViewById(R.id.cbExtraCheese);
@@ -52,6 +45,19 @@ public class FoodDetailsActivities extends AppCompatActivity {
 
         Button btnPlus = findViewById(R.id.btnPlus);
         Button btnMinus = findViewById(R.id.btnMinus);
+
+        // Get Food ID from Intent
+        foodId = getIntent().getIntExtra("food_id", -1);
+        if (foodId != -1) {
+            Food food = dbHelper.getFoodById(foodId);
+            if (food != null) {
+                basePrice = food.getPrice();
+                tvFoodTitle.setText(food.getName());
+                tvFoodDescription.setText(food.getDescription());
+            }
+        }
+
+
 
         // برمجة زر الزيادة (+)
         btnPlus.setOnClickListener(v -> {
