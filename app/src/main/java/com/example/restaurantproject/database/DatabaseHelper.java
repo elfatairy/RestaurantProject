@@ -118,6 +118,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // CRUD & BUSINESS LOGIC
     // ==========================================
 
+    public long registerUser(String name, String email, String password, String phone, String address) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        
+        // Check if email already exists
+        Cursor cursor = db.query(TABLE_USERS, new String[]{"id"}, "email=?", new String[]{email}, null, null, null);
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return -1; // Email already exists
+        }
+        cursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("email", email);
+        values.put("password", password);
+        values.put("phone_number", phone);
+        values.put("address", address);
+
+        return db.insert(TABLE_USERS, null, values);
+    }
+
+    public boolean checkUser(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, new String[]{"id"}, "email=? AND password=?", new String[]{email, password}, null, null, null);
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
+    }
+
+    public int getUserIdByEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, new String[]{"id"}, "email=?", new String[]{email}, null, null, null);
+        int id = -1;
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+        return id;
+    }
+
     public void seedInitialFoods() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_FOODS, null);

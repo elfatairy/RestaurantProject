@@ -1,5 +1,6 @@
 package com.example.restaurantproject;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,12 +79,16 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             popupMenu.setOnMenuItemClickListener(item -> {
 
                 if (item.getItemId() == R.id.action_view_details) {
-                    // TODO: Open Food Details
+                    Intent intent = new Intent(v.getContext(), FoodDetailsActivities.class);
+                    intent.putExtra("food_id", food.getId());
+                    v.getContext().startActivity(intent);
                     return true;
                 }
 
                 if (item.getItemId() == R.id.action_add_to_cart) {
-                    // TODO: Add food to Cart
+                    Intent intent = new Intent(v.getContext(), FoodDetailsActivities.class);
+                    intent.putExtra("food_id", food.getId());
+                    v.getContext().startActivity(intent);
                     return true;
                 }
 

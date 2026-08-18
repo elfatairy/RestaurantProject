@@ -1,6 +1,8 @@
 package com.example.restaurantproject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -86,7 +88,13 @@ public class FoodDetailsActivities extends AppCompatActivity {
                 return;
             }
 
-            int userId = 1; // Assuming a dummy user for now
+            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            int userId = sharedPreferences.getInt("user_id", -1);
+            if (userId == -1) {
+                Toast.makeText(this, "Error: User not logged in", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String selectedSize = "Small";
             int id = radioGroupSize.getCheckedRadioButtonId();
             if (id == R.id.radioMedium) selectedSize = "Medium";
