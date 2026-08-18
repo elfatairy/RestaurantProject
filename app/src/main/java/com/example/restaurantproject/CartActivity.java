@@ -68,13 +68,12 @@ public class CartActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.action_logout) {
-                SharedPreferences prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-                prefs.edit().clear().apply();
-                Intent intent = new Intent(this, StartActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+            if (item.getItemId() == R.id.action_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+            }
+            if (item.getItemId() == R.id.action_cart) {
+                // Already in CartActivity
                 return true;
             }
             return false;
@@ -94,6 +93,12 @@ public class CartActivity extends AppCompatActivity {
             }
             if (item.getItemId() == R.id.nav_orders) {
                 startActivity(new Intent(this, OrdersActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            }
+            if (item.getItemId() == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
                 overridePendingTransition(0, 0);
                 finish();
                 return true;
