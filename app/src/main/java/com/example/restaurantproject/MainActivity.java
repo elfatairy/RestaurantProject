@@ -37,15 +37,12 @@ public class MainActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.action_logout) {
-                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.clear();
-                editor.apply();
-                Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+            if (item.getItemId() == R.id.action_profile) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                return true;
+            }
+            if (item.getItemId() == R.id.action_cart) {
+                startActivity(new Intent(MainActivity.this, CartActivity.class));
                 return true;
             }
             return false;
@@ -64,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
             }
             if (item.getItemId() == R.id.nav_orders) {
                 startActivity(new Intent(MainActivity.this, OrdersActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            if (item.getItemId() == R.id.nav_profile) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             }
